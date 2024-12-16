@@ -3,7 +3,7 @@ const adminAuth = (req, res, next) => {
   
     // Hardcoded admin credentials (for demonstration)
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'adminpassword';
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password';
   
     // Basic authentication check
     if (

@@ -1,4 +1,4 @@
-const Package = require('../models/package');
+const Package = require('../models/packages');
 
 // Get all packages
 exports.getAllPackages = async (req, res) => {

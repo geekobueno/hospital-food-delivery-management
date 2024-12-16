@@ -1,4 +1,4 @@
-const Package = require('../models/package');
+const Package = require('../models/packages');
 
 // Add a new package
 exports.addPackage = async (req, res) => {
