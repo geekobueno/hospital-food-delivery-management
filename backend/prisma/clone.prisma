@@ -1,0 +1,130 @@
+// This is your Prisma schema file
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    email     String   @unique
+    username  String   @unique
+    password  String
+    role      String   @default("ADMIN")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("users")
+}
+
+model Disease {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    patients    Patient[] @relation("PatientDiseases")
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime  @updatedAt @map("updated_at")
+
+    @@map("diseases")
+}
+
+model Patient {
+    id                String    @id @default(auto()) @map("_id") @db.ObjectId
+    name              String
+    diseases          Disease[] @relation("PatientDiseases")
+    allergies         String
+    room_num          Int
+    bed_num           Int
+    floor_num         Int
+    age               Int
+    gender            String
+    contact_info      Contact
+    emergency_contact Contact
+    dietID            String?   @db.ObjectId
+    diet              Diet?     @relation(fields: [dietID], references: [id])
+    createdAt         DateTime  @default(now()) @map("created_at")
+    updatedAt         DateTime  @updatedAt @map("updated_at")
+
+    @@map("patients")
+}
+
+model Diet {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    morning   Meal[]   @relation("MorningMeals")
+    evening   Meal[]   @relation("EveningMeals")
+    night     Meal[]   @relation("NightMeals")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("diets")
+}
+
+model Meal {
+    id             String       @id @default(auto()) @map("_id") @db.ObjectId
+    name           String
+    ingredients    Ingredient[]
+    specifications String?
+    createdAt      DateTime     @default(now()) @map("created_at")
+    updatedAt      DateTime     @updatedAt @map("updated_at")
+    dietMorning    Diet?        @relation("MorningMeals", fields: [dietMorningId], references: [id])
+    dietEvening    Diet?        @relation("EveningMeals", fields: [dietEveningId], references: [id])
+    dietNight      Diet?        @relation("NightMeals", fields: [dietNightId], references: [id])
+
+    @@map("meals")
+}
+
+model Ingredient {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    quantity  String
+    type      String
+    mealID    String   @db.ObjectId
+    meal      Meal     @relation(fields: [mealID], references: [id])
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("ingredients")
+}
+
+model Pantry {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    staffName    String
+    contactInfo  Contact
+    location     String
+    taskAssigned Task[]
+    createdAt    DateTime @default(now()) @map("created_at")
+    updatedAt    DateTime @updatedAt @map("updated_at")
+
+    @@map("pantries")
+}
+
+model Task {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    taskType   String
+    assignedTo String
+    status     String
+    createdAt  DateTime @default(now()) @map("created_at")
+    updatedAt  DateTime @updatedAt @map("updated_at")
+    pantryID   String   @db.ObjectId
+    pantry     Pantry   @relation(fields: [pantryID], references: [id])
+
+    @@map("tasks")
+}
+
+type Contact {
+    name    String?
+    email   String
+    phone   String
+    address Address
+}
+
+type Address {
+    street String
+    city   String
+    state  String
+    zip    String
+}
