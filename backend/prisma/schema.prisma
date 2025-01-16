@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  PANTRY_MANAGER
+  PANTRY_STAFF
+  DELIVERY_PERSONNEL
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum MealTime {
+  MORNING
+  EVENING
+  NIGHT
+}
+
+enum MealStatus {
+  PENDING
+  PREPARING
+  PREPARED
+  IN_DELIVERY
+  DELIVERED
+  DELAYED
+  CANCELLED
+}
+
+enum AlertType {
+  DELIVERY_DELAY
+  PREPARATION_DELAY
+  DIETARY_RESTRICTION
+  STAFF_SHORTAGE
+  OTHER
+}
+
+enum AlertPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  username  String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  staff     Staff?
+
+  @@map("users")
+}
+
+model Patient {
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  diseases         PatientDiseases[]  // Changed to use the junction model
+  allergies        String[]
+  roomNumber       String
+  bedNumber        String
+  floorNumber      String
+  age              Int
+  gender           Gender
+  contactNumber    Contact
+  emergencyContact Contact
+  dietaryNotes     String?
+  additionalNotes  String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  isActive         Boolean    @default(true)
+  mealPlans        MealPlan[]
+  // Relationships
+  assignedPantry   Pantry?    @relation(fields: [pantryId], references: [id])
+  pantryId         String?    @db.ObjectId
+
+  @@map("patients")
+}
+
+model Disease {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  patients    PatientDiseases[]  // Changed to use the junction model
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("diseases")
+}
+
+// Junction model for many-to-many relationship
+model PatientDiseases {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  patientId   String   @db.ObjectId
+  disease     Disease  @relation(fields: [diseaseId], references: [id])
+  diseaseId   String   @db.ObjectId
+  diagnosedAt DateTime @default(now())
+  notes       String?
+
+  @@unique([patientId, diseaseId])
+  @@map("patient_diseases")
+}
+
+model MealPlan {
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  patientId            String     @db.ObjectId
+  date                 DateTime
+  mealTime             MealTime
+  ingredients          String[]
+  specialInstructions  String[]
+  calories             Float?
+  nutritionalInfo      Json? // Detailed nutritional information
+  status               MealStatus @default(PENDING)
+  preparationStartTime DateTime?
+  preparationEndTime   DateTime?
+  deliveryStartTime    DateTime?
+  deliveryEndTime      DateTime?
+  deliveryNotes        String?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  // Relationships
+  patient       Patient  @relation(fields: [patientId], references: [id])
+  preparedBy    Staff?   @relation("PreparedMeals", fields: [preparedById], references: [id])
+  preparedById  String?  @db.ObjectId
+  deliveredBy   Staff?   @relation("DeliveredMeals", fields: [deliveredById], references: [id])
+  deliveredById String?  @db.ObjectId
+  mealBox       MealBox?
+  alerts        Alert[]
+
+  @@map("meal_plans")
+}
+
+model MealBox {
+  id                          String   @id @default(auto()) @map("_id") @db.ObjectId
+  mealPlanId                  String   @unique @db.ObjectId
+  mealPlan                    MealPlan @relation(fields: [mealPlanId], references: [id])
+  boxNumber                   String   @unique
+  sealedTime                  DateTime
+  temperature                 Float? // For temperature-sensitive meals
+  specialHandlingInstructions String?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  @@map("meal_boxes")
+}
+
+model Pantry {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  location       String
+  capacity       Int // Maximum number of meals that can be prepared
+  currentLoad    Int      @default(0)
+  operatingHours Json // Store opening and closing times for each day
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relationships
+  staff       Staff[]
+  patients    Patient[]
+  performance PantryPerformance[]
+
+  @@map("pantries")
+}
+
+model Staff {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @unique @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  contactInfo   Contact
+  role          String
+  isAvailable   Boolean  @default(true)
+  shiftSchedule Json? // Store staff work schedule
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  pantry         Pantry     @relation(fields: [pantryId], references: [id])
+  pantryId       String     @db.ObjectId
+  preparedMeals  MealPlan[] @relation("PreparedMeals")
+  deliveredMeals MealPlan[] @relation("DeliveredMeals")
+
+  @@map("staff")
+}
+
+model PantryPerformance {
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  pantryId               String   @db.ObjectId
+  pantry                 Pantry   @relation(fields: [pantryId], references: [id])
+  date                   DateTime
+  mealsPrepared          Int      @default(0)
+  mealsDelivered         Int      @default(0)
+  delayedDeliveries      Int      @default(0)
+  averagePreparationTime Float
+  averageDeliveryTime    Float
+  staffUtilization       Float // Percentage of staff actively working
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@map("pantry_performance")
+}
+
+model Alert {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  type       AlertType
+  priority   AlertPriority
+  message    String
+  mealPlanId String?       @db.ObjectId
+  mealPlan   MealPlan?     @relation(fields: [mealPlanId], references: [id])
+  isResolved Boolean       @default(false)
+  resolvedAt DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@map("alerts")
+}
+
+type Contact {
+  name    String?
+  email   String
+  phone   String
+  address Address
+}
+
+type Address {
+  street String
+  city   String
+  state  String
+  zip    String
+}
