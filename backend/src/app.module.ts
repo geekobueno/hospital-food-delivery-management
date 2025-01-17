@@ -6,9 +6,17 @@ import { UsersModule } from './users/users.module';
 import { PatientsModule } from './patients/patients.module';
 import { DiseasesModule } from './diseases/diseases.module';
 import { PatientsDiseasesJunctionModule } from './patients-diseases-junction/patients-diseases-junction.module';
+import { MealBoxesModule } from './meal-boxes/meal-boxes.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, PatientsModule, DiseasesModule, PatientsDiseasesJunctionModule],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    PatientsModule,
+    DiseasesModule,
+    PatientsDiseasesJunctionModule,
+    MealBoxesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
