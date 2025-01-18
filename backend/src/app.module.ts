@@ -9,6 +9,7 @@ import { PatientsDiseasesJunctionModule } from './patients-diseases-junction/pat
 import { MealBoxesModule } from './meal-boxes/meal-boxes.module';
 import { MealPlansModule } from './meal-plans/meal-plans.module';
 import { PantriesModule } from './pantries/pantries.module';
+import { StaffModule } from './staff/staff.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PantriesModule } from './pantries/pantries.module';
     MealBoxesModule,
     MealPlansModule,
     PantriesModule,
+    StaffModule,
   ],
   controllers: [AppController],
   providers: [AppService],
