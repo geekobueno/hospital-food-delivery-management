@@ -7,6 +7,7 @@ import { PatientsModule } from './patients/patients.module';
 import { DiseasesModule } from './diseases/diseases.module';
 import { PatientsDiseasesJunctionModule } from './patients-diseases-junction/patients-diseases-junction.module';
 import { MealBoxesModule } from './meal-boxes/meal-boxes.module';
+import { MealPlansModule } from './meal-plans/meal-plans.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MealBoxesModule } from './meal-boxes/meal-boxes.module';
     DiseasesModule,
     PatientsDiseasesJunctionModule,
     MealBoxesModule,
+    MealPlansModule,
   ],
   controllers: [AppController],
   providers: [AppService],

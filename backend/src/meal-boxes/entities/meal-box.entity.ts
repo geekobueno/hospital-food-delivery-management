@@ -1,5 +1,6 @@
 import { MealBox } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { JsonValue } from '@prisma/client/runtime/library';
 
 export class MealBoxEntity implements MealBox {
   @ApiProperty()
@@ -9,7 +10,7 @@ export class MealBoxEntity implements MealBox {
   mealPlanId: string;
 
   @ApiProperty()
-  mealPlan: string[];
+  mealPlan: JsonValue;
 
   @ApiProperty()
   boxNumber: string;
