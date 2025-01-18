@@ -10,6 +10,7 @@ import { MealBoxesModule } from './meal-boxes/meal-boxes.module';
 import { MealPlansModule } from './meal-plans/meal-plans.module';
 import { PantriesModule } from './pantries/pantries.module';
 import { StaffModule } from './staff/staff.module';
+import { PantryPerfModule } from './pantry-perf/pantry-perf.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { StaffModule } from './staff/staff.module';
     MealPlansModule,
     PantriesModule,
     StaffModule,
+    PantryPerfModule,
   ],
   controllers: [AppController],
   providers: [AppService],
