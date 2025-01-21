@@ -1,5 +1,6 @@
 import { Disease } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { JsonValue } from '@prisma/client/runtime/library';
 
 export class DiseaseEntity implements Disease {
   @ApiProperty()
@@ -8,11 +9,13 @@ export class DiseaseEntity implements Disease {
   @ApiProperty()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   description: string;
 
   @ApiProperty()
-  patients: string[];
+  patients: JsonValue[];
 
   @ApiProperty()
   createdAt: Date;
