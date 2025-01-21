@@ -1,30 +1,46 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { AlertType } from 'src/enums/alertType.enum';
-import { AlertPriority } from 'src/enums/alertPriority.enum';
-import { JsonValue } from '@prisma/client/runtime/library';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEnum,
+  IsString,
+  IsOptional,
+  IsNotEmpty,
+  MinLength,
+} from 'class-validator';
+import { AlertType, AlertPriority } from '@prisma/client';
 
 export class CreateAlertDto {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
+  @ApiProperty({
+    enum: AlertType,
+    description: 'Type of the alert',
+    example: AlertType.DELIVERY_DELAY,
+  })
+  @IsEnum(AlertType)
+  @IsNotEmpty()
   type: AlertType;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: AlertPriority,
+    description: 'Priority level of the alert',
+    example: AlertPriority.HIGH,
+  })
+  @IsEnum(AlertPriority)
+  @IsNotEmpty()
   priority: AlertPriority;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Alert message',
+    example: 'Delivery to Room 302 is delayed due to traffic',
+    minLength: 10,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(10)
   message: string;
 
-  @ApiProperty({ required: false })
-  mealPlanId: string;
-
-  @ApiProperty({ required: false })
-  mealPlan: JsonValue;
-
-  @ApiProperty()
-  isResolved: boolean;
-
-  @ApiProperty({ required: false })
-  resolvedAt: Date;
+  @ApiPropertyOptional({
+    description: 'Associated meal plan ID',
+    type: String,
+  })
+  @IsOptional()
+  mealPlanId?: string;
 }

@@ -1,21 +1,30 @@
 import { Disease } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { JsonValue } from '@prisma/client/runtime/library';
 
 export class DiseaseEntity implements Disease {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Disease ID',
+    example: 'automatic from MongoDB',
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Disease name',
+    example: 'Diabetes',
+  })
   name: string;
 
   @ApiProperty({
+    description: 'Disease description',
     required: false,
   })
   description: string;
 
-  @ApiProperty()
-  patients: JsonValue[];
+  @ApiProperty({
+    description: 'List of patients affected by the disease',
+    required: true,
+  })
+  patients: string[];
 
   @ApiProperty()
   createdAt: Date;

@@ -1,21 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateDiseaseDto {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Disease name',
+    example: 'Diabetes',
+  })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Disease description',
+    required: false,
+  })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'List of patients affected by the disease',
+    required: true,
+  })
   patients: string[];
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
 }

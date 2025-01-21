@@ -1,37 +1,58 @@
-import { Alert } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { AlertType } from 'src/enums/alertType.enum';
-import { AlertPriority } from 'src/enums/alertPriority.enum';
-import { JsonValue } from '@prisma/client/runtime/library';
+import { Alert, AlertType, AlertPriority } from '@prisma/client';
 
 export class AlertEntity implements Alert {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Alert ID',
+    example: 'automatic from mongoDB',
+  })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: AlertType,
+    description: 'Type of the alert',
+    example: AlertType.DELIVERY_DELAY,
+  })
   type: AlertType;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: AlertPriority,
+    description: 'Priority level of the alert',
+    example: AlertPriority.HIGH,
+  })
   priority: AlertPriority;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Alert message',
+    example: 'Delivery to Room 302 is delayed due to traffic',
+  })
   message: string;
 
-  @ApiProperty({ required: false })
-  mealPlanId: string;
+  @ApiProperty({
+    description: 'Associated meal plan ID',
+    required: false,
+  })
+  mealPlanId: string | null;
 
-  @ApiProperty({ required: false })
-  mealPlan: JsonValue;
-
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Whether the alert has been resolved',
+    example: false,
+  })
   isResolved: boolean;
 
-  @ApiProperty({ required: false })
-  resolvedAt: Date;
+  @ApiProperty({
+    description: 'When the alert was resolved',
+    required: false,
+  })
+  resolvedAt: Date | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Creation timestamp',
+  })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Last update timestamp',
+  })
   updatedAt: Date;
 }

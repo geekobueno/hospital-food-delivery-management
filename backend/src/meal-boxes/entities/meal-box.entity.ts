@@ -1,16 +1,17 @@
 import { MealBox } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { JsonValue } from '@prisma/client/runtime/library';
 
 export class MealBoxEntity implements MealBox {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Meal Box ID',
+    example: 'automatic mongoDB',
+  })
   id: string;
 
-  @ApiProperty()
-  mealPlanId: string;
-
-  @ApiProperty()
-  mealPlan: JsonValue;
+  @ApiProperty({
+    description: 'ID of included meal Plan',
+  })
+  mealPlanId: string | null;
 
   @ApiProperty()
   boxNumber: string;
@@ -19,10 +20,10 @@ export class MealBoxEntity implements MealBox {
   sealedTime: Date;
 
   @ApiProperty({ required: false })
-  temperature: number;
+  temperature: number | null;
 
   @ApiProperty({ required: false })
-  specialHandlingInstructions: string;
+  specialHandlingInstructions: string | null;
 
   @ApiProperty()
   createdAt: Date;

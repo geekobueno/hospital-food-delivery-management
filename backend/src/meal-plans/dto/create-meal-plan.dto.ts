@@ -1,13 +1,9 @@
-import { MealStatus } from 'src/enums/mealStatus.enum';
+import { MealStatus, MealTime } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
-import { MealTime } from 'src/enums/mealTime.enum';
 import { JsonValue } from '@prisma/client/runtime/library';
 
 export class CreateMealPlanDto {
-  @ApiProperty()
-  id: string;
-
   @ApiProperty()
   patientId: string;
 
@@ -24,46 +20,46 @@ export class CreateMealPlanDto {
   @ApiProperty()
   specialInstructions: string[];
 
-  @ApiProperty()
-  calories: number;
+  @ApiProperty({
+    required: false,
+  })
+  calories: number | null;
 
-  @ApiProperty()
-  nutritionalInfo: JsonValue;
+  @ApiProperty({
+    required: false,
+  })
+  nutritionalInfo: JsonValue | null;
 
   @ApiProperty()
   @IsEnum(MealStatus)
   status: MealStatus;
 
   @ApiProperty({ required: false })
-  preparationStartTime: Date;
+  preparationStartTime: Date | null;
 
   @ApiProperty({ required: false })
-  preparationEndTime: Date;
+  preparationEndTime: Date | null;
 
   @ApiProperty({ required: false })
-  deliveryStartTime: Date;
+  deliveryStartTime: Date | null;
 
   @ApiProperty({ required: false })
-  deliveryEndTime: Date;
+  deliveryEndTime: Date | null;
 
   @ApiProperty({ required: false })
-  deliveryNotes: string;
-
-  @ApiProperty()
-  patient: JsonValue;
+  deliveryNotes: string | null;
 
   @ApiProperty({ required: false })
-  preparedBy: JsonValue;
+  preparedById: string | null;
 
   @ApiProperty({ required: false })
-  preparedById: string;
-
-  @ApiProperty({ required: false })
-  deliveredBy: JsonValue;
-
-  @ApiProperty({ required: false })
-  deliveredById: string;
+  deliveredById: string | null;
 
   @ApiProperty()
   alerts: JsonValue[];
+
+  @ApiProperty({
+    required: false,
+  })
+  MealBox: JsonValue | null;
 }
