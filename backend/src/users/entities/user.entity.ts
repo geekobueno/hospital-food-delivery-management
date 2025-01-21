@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../enums/role.enum';
+import { Role } from '../../enums/role.enum';
 import {
   IsEmail,
   IsEnum,
@@ -56,4 +56,4 @@ export class UserEntity implements User {
   updatedAt: Date;
 }
 
-//TO-DO : add staff
+//TODO add staff

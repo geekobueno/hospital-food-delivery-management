@@ -58,15 +58,16 @@ model User {
   role      Role     @default(ADMIN)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  staff     Staff?
+  staff     Staff?   @relation(fields: [staffId], references: [id])
+  staffId   String?  @unique @db.ObjectId
 
   @@map("users")
 }
 
 model Patient {
-  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
   name             String
-  diseases         PatientDiseases[]  // Changed to use the junction model
+  diseases         PatientDiseases[]
   allergies        String[]
   roomNumber       String
   bedNumber        String
@@ -77,29 +78,27 @@ model Patient {
   emergencyContact Contact
   dietaryNotes     String?
   additionalNotes  String?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  isActive         Boolean    @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  isActive         Boolean           @default(true)
   mealPlans        MealPlan[]
-  // Relationships
-  assignedPantry   Pantry?    @relation(fields: [pantryId], references: [id])
-  pantryId         String?    @db.ObjectId
+  pantryId         String?           @db.ObjectId
+  assignedPantry   Pantry?          @relation(fields: [pantryId], references: [id])
 
   @@map("patients")
 }
 
 model Disease {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String   @unique
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  name        String            @unique
   description String?
-  patients    PatientDiseases[]  // Changed to use the junction model
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  patients    PatientDiseases[]
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
 
   @@map("diseases")
 }
 
-// Junction model for many-to-many relationship
 model PatientDiseases {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   patient     Patient  @relation(fields: [patientId], references: [id])
@@ -115,13 +114,12 @@ model PatientDiseases {
 
 model MealPlan {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
-  patientId            String     @db.ObjectId
   date                 DateTime
   mealTime             MealTime
   ingredients          String[]
   specialInstructions  String[]
   calories             Float?
-  nutritionalInfo      Json? // Detailed nutritional information
+  nutritionalInfo      Json?
   status               MealStatus @default(PENDING)
   preparationStartTime DateTime?
   preparationEndTime   DateTime?
@@ -131,14 +129,14 @@ model MealPlan {
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt
 
-  // Relationships
-  patient       Patient  @relation(fields: [patientId], references: [id])
-  preparedBy    Staff?   @relation("PreparedMeals", fields: [preparedById], references: [id])
-  preparedById  String?  @db.ObjectId
-  deliveredBy   Staff?   @relation("DeliveredMeals", fields: [deliveredById], references: [id])
-  deliveredById String?  @db.ObjectId
-  mealBox       MealBox?
-  alerts        Alert[]
+  patientId    String   @db.ObjectId
+  patient      Patient  @relation(fields: [patientId], references: [id])
+  preparedById String?  @db.ObjectId
+  preparedBy   Staff?   @relation("PreparedMeals", fields: [preparedById], references: [id])
+  deliveredById String? @db.ObjectId
+  deliveredBy  Staff?   @relation("DeliveredMeals", fields: [deliveredById], references: [id])
+  mealBox      MealBox?
+  alerts       Alert[]
 
   @@map("meal_plans")
 }
@@ -149,7 +147,7 @@ model MealBox {
   mealPlan                    MealPlan @relation(fields: [mealPlanId], references: [id])
   boxNumber                   String   @unique
   sealedTime                  DateTime
-  temperature                 Float? // For temperature-sensitive meals
+  temperature                 Float?
   specialHandlingInstructions String?
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
@@ -158,55 +156,51 @@ model MealBox {
 }
 
 model Pantry {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String               @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   location       String
-  capacity       Int // Maximum number of meals that can be prepared
-  currentLoad    Int      @default(0)
-  operatingHours Json // Store opening and closing times for each day
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  // Relationships
-  staff       Staff[]
-  patients    Patient[]
-  performance PantryPerformance[]
+  capacity       Int
+  currentLoad    Int                  @default(0)
+  operatingHours Json
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  staff          Staff[]
+  patients       Patient[]
+  performance    PantryPerformance[]
 
   @@map("pantries")
 }
 
 model Staff {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String   @unique @db.ObjectId
-  user          User     @relation(fields: [userId], references: [id])
+  user          User?
   name          String
   contactInfo   Contact
   role          String
   isAvailable   Boolean  @default(true)
-  shiftSchedule Json? // Store staff work schedule
+  shiftSchedule Json?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relationships
-  pantry         Pantry     @relation(fields: [pantryId], references: [id])
-  pantryId       String     @db.ObjectId
-  preparedMeals  MealPlan[] @relation("PreparedMeals")
-  deliveredMeals MealPlan[] @relation("DeliveredMeals")
+  pantryId        String   @db.ObjectId
+  pantry          Pantry   @relation(fields: [pantryId], references: [id])
+  preparedMeals   MealPlan[] @relation("PreparedMeals")
+  deliveredMeals  MealPlan[] @relation("DeliveredMeals")
 
   @@map("staff")
 }
 
 model PantryPerformance {
   id                     String   @id @default(auto()) @map("_id") @db.ObjectId
-  pantryId               String   @db.ObjectId
-  pantry                 Pantry   @relation(fields: [pantryId], references: [id])
+  pantryId              String   @db.ObjectId
+  pantry                Pantry   @relation(fields: [pantryId], references: [id])
   date                   DateTime
   mealsPrepared          Int      @default(0)
   mealsDelivered         Int      @default(0)
   delayedDeliveries      Int      @default(0)
   averagePreparationTime Float
   averageDeliveryTime    Float
-  staffUtilization       Float // Percentage of staff actively working
+  staffUtilization       Float
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
@@ -218,8 +212,8 @@ model Alert {
   type       AlertType
   priority   AlertPriority
   message    String
-  mealPlanId String?       @db.ObjectId
-  mealPlan   MealPlan?     @relation(fields: [mealPlanId], references: [id])
+  mealPlanId String?      @db.ObjectId
+  mealPlan   MealPlan?    @relation(fields: [mealPlanId], references: [id])
   isResolved Boolean       @default(false)
   resolvedAt DateTime?
   createdAt  DateTime      @default(now())

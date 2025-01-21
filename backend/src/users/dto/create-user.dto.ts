@@ -6,7 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { Role } from '../enums/role.enum';
+import { Role } from '../../enums/role.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -47,4 +47,4 @@ export class CreateUserDto {
   role?: Role;
 }
 
-//TO-DO : add staff
+//TODO : add staff
