@@ -1,7 +1,6 @@
 import { Patient } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from 'src/enums/gender.enum';
-import { Contact } from 'src/types/contact.type';
+import { Contact, Gender } from '@prisma/client';
 import { IsEnum } from 'class-validator';
 
 export class PatientEntity implements Patient {

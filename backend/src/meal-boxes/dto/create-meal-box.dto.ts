@@ -1,14 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMealBoxDto {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  mealPlanId: string;
-
-  @ApiProperty()
-  mealPlan: string[];
+  @ApiProperty({
+    description: 'ID of included meal Plan',
+  })
+  mealPlanId: string | null;
 
   @ApiProperty()
   boxNumber: string;
@@ -17,8 +13,8 @@ export class CreateMealBoxDto {
   sealedTime: Date;
 
   @ApiProperty({ required: false })
-  temperature: number;
+  temperature: number | null;
 
   @ApiProperty({ required: false })
-  specialHandlingInstructions: string;
+  specialHandlingInstructions: string | null;
 }

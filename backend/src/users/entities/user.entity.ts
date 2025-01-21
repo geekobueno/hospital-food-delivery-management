@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../enums/role.enum';
+import { Role } from '@prisma/client';
 import {
   IsEmail,
   IsEnum,
@@ -10,7 +10,10 @@ import {
 } from 'class-validator';
 
 export class UserEntity implements User {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'User ID',
+    example: 'automatic from mongoDB',
+  })
   id: string;
 
   @ApiProperty({
@@ -24,11 +27,11 @@ export class UserEntity implements User {
   @ApiProperty({
     description: 'Username for the account',
     example: 'johndoe',
-    minLength: 3,
+    minLength: 5,
   })
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @MinLength(5)
   username: string;
 
   @ApiProperty({
@@ -50,10 +53,15 @@ export class UserEntity implements User {
   @IsEnum(Role)
   role: Role;
 
+  @ApiProperty({
+    required: false,
+    description: 'ID of the staff he is included in ',
+    example: 'automatic from mongoDB',
+  })
+  staffId: string | null;
+
   @ApiProperty()
   createdAt: Date;
   @ApiProperty()
   updatedAt: Date;
 }
-
-//TODO add staff

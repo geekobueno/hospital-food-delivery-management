@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
@@ -6,7 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { Role } from '../../enums/role.enum';
+import { Role } from '@prisma/client';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -20,11 +20,11 @@ export class CreateUserDto {
   @ApiProperty({
     description: 'Username for the account',
     example: 'johndoe',
-    minLength: 3,
+    minLength: 5,
   })
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @MinLength(5)
   username: string;
 
   @ApiProperty({
@@ -45,6 +45,12 @@ export class CreateUserDto {
   })
   @IsEnum(Role)
   role?: Role;
-}
 
-//TODO : add staff
+  @ApiPropertyOptional({
+    required: false,
+    description: 'ID of the staff he is included in ',
+    example: 'automatic from mongoDB',
+    type: String,
+  })
+  staffID: string;
+}
