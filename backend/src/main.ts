@@ -19,4 +19,4 @@ async function bootstrap() {
 }
 bootstrap();
 
-// TODO comme back on diseases,pantries, pantry-perf, patien and  mealplans crud
+// TODO comme back on pantries, pantry-perf, and  mealplans crud

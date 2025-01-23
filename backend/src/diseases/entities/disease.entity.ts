@@ -1,30 +1,15 @@
-import { Disease } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { Disease } from '@prisma/client';
 
 export class DiseaseEntity implements Disease {
-  @ApiProperty({
-    description: 'Disease ID',
-    example: 'automatic from MongoDB',
-  })
+  @ApiProperty()
   id: string;
 
-  @ApiProperty({
-    description: 'Disease name',
-    example: 'Diabetes',
-  })
+  @ApiProperty()
   name: string;
 
-  @ApiProperty({
-    description: 'Disease description',
-    required: false,
-  })
-  description: string;
-
-  @ApiProperty({
-    description: 'List of patients affected by the disease',
-    required: true,
-  })
-  patients: string[];
+  @ApiProperty({ required: false })
+  description: string | null;
 
   @ApiProperty()
   createdAt: Date;

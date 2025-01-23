@@ -11,6 +11,7 @@ import { PantriesModule } from './pantries/pantries.module';
 import { StaffModule } from './staff/staff.module';
 import { PantryPerfModule } from './pantry-perf/pantry-perf.module';
 import { AlertsModule } from './alerts/alerts.module';
+import { PatientsDiseasesModule } from './patients-diseases/patients-diseases.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AlertsModule } from './alerts/alerts.module';
     StaffModule,
     PantryPerfModule,
     AlertsModule,
+    PatientsDiseasesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
