@@ -54,12 +54,4 @@ export class CreateMealPlanDto {
 
   @ApiProperty({ required: false })
   deliveredById: string | null;
-
-  @ApiProperty()
-  alerts: JsonValue[];
-
-  @ApiProperty({
-    required: false,
-  })
-  MealBox: JsonValue | null;
 }

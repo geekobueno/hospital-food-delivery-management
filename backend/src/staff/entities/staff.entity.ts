@@ -1,17 +1,13 @@
 import { Staff } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { JsonValue } from '@prisma/client/runtime/library';
-import { Contact } from 'src/types/contact.type';
-
+import { Contact } from '@prisma/client';
 export class StaffEntity implements Staff {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
   userId: string;
-
-  @ApiProperty()
-  user: JsonValue;
 
   @ApiProperty()
   name: string;
@@ -30,23 +26,14 @@ export class StaffEntity implements Staff {
   @ApiProperty({
     required: false,
   })
-  shiftSchedule: JsonValue;
+  shiftSchedule: JsonValue | null;
+
+  @ApiProperty()
+  pantryId: string;
 
   @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
-
-  @ApiProperty()
-  pantry: JsonValue;
-
-  @ApiProperty()
-  pantryId: string;
-
-  @ApiProperty()
-  preparedMeals: JsonValue[];
-
-  @ApiProperty()
-  deliveredMeals: JsonValue[];
 }

@@ -18,5 +18,3 @@ async function bootstrap() {
   console.log(`Application running at ${await app.getUrl()}`);
 }
 bootstrap();
-
-// TODO comme back on pantries, pantry-perf, and  mealplans crud

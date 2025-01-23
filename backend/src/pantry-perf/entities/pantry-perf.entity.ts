@@ -1,6 +1,5 @@
 import { PantryPerformance } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { JsonValue } from '@prisma/client/runtime/library';
 
 export class PantryPerfEntity implements PantryPerformance {
   @ApiProperty()
@@ -8,9 +7,6 @@ export class PantryPerfEntity implements PantryPerformance {
 
   @ApiProperty()
   pantryId: string;
-
-  @ApiProperty()
-  pantry: JsonValue;
 
   @ApiProperty()
   date: Date;
