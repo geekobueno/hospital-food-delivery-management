@@ -26,13 +26,4 @@ export class PantryEntity implements Pantry {
 
   @ApiProperty()
   updatedAt: Date;
-
-  @ApiProperty()
-  staff: JsonValue[];
-
-  @ApiProperty()
-  patients: JsonValue[];
-
-  @ApiProperty()
-  performance: JsonValue[];
 }

@@ -63,7 +63,4 @@ export class MealPlanEntity implements MealPlan {
 
   @ApiProperty({ required: false })
   deliveredById: string | null;
-
-  @ApiProperty()
-  alerts: JsonValue[];
 }

@@ -3,9 +3,6 @@ import { JsonValue } from '@prisma/client/runtime/library';
 
 export class CreatePantryDto {
   @ApiProperty()
-  id: string;
-
-  @ApiProperty()
   name: string;
 
   @ApiProperty()
@@ -19,13 +16,4 @@ export class CreatePantryDto {
 
   @ApiProperty()
   operatingHours: JsonValue;
-
-  @ApiProperty()
-  staff: JsonValue[];
-
-  @ApiProperty()
-  patients: JsonValue[];
-
-  @ApiProperty()
-  performance: JsonValue[];
 }

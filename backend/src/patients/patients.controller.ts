@@ -3,48 +3,51 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
+  Put,
   Delete,
 } from '@nestjs/common';
-import { PatientEntity } from './entities/patient.entity';
-import { ApiTags, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
-import { UpdatePatientDto } from './dto/update-patient.dto';
-
-@Controller('patients')
+import { PatientEntity } from './entities/patient.entity';
 @ApiTags('patients')
-export class PatientsController {
-  constructor(private readonly patientsService: PatientsService) {}
+@Controller('patients')
+export class PatientController {
+  constructor(private readonly patientService: PatientsService) {}
 
   @Post()
-  @ApiCreatedResponse({ type: PatientEntity })
+  @ApiOperation({ summary: 'Create patient' })
+  @ApiResponse({ status: 201, type: PatientEntity })
   create(@Body() createPatientDto: CreatePatientDto) {
-    return this.patientsService.create(createPatientDto);
+    return this.patientService.create(createPatientDto);
   }
 
   @Get()
-  @ApiOkResponse({ type: PatientEntity, isArray: true })
+  @ApiOperation({ summary: 'Get all patients' })
+  @ApiResponse({ status: 200, type: [PatientEntity] })
   findAll() {
-    return this.patientsService.findAll();
+    return this.patientService.findAll();
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: PatientEntity })
+  @ApiOperation({ summary: 'Get patient by id' })
+  @ApiResponse({ status: 200, type: PatientEntity })
   findOne(@Param('id') id: string) {
-    return this.patientsService.findOne(id);
+    return this.patientService.findOne(id);
   }
 
-  @Patch(':id')
-  @ApiOkResponse({ type: PatientEntity })
-  update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto) {
-    return this.patientsService.update(id, updatePatientDto);
+  @Put(':id')
+  @ApiOperation({ summary: 'Update patient' })
+  @ApiResponse({ status: 200, type: PatientEntity })
+  update(@Param('id') id: string, @Body() updatePatientDto: CreatePatientDto) {
+    return this.patientService.update(id, updatePatientDto);
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: PatientEntity })
+  @ApiOperation({ summary: 'Delete patient' })
+  @ApiResponse({ status: 200, type: PatientEntity })
   remove(@Param('id') id: string) {
-    return this.patientsService.remove(id);
+    return this.patientService.remove(id);
   }
 }

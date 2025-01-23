@@ -1,70 +1,65 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from 'src/enums/gender.enum';
-import { Contact } from 'src/types/contact.type';
-import { IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsInt,
+  IsArray,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { Gender, Contact } from '@prisma/client';
 
 export class CreatePatientDto {
-  @ApiProperty({
-    description: 'full name of the patient',
-  })
+  @IsString()
+  @ApiProperty()
   name: string;
 
-  @ApiProperty({
-    description: 'list of diseases of the patient',
-  })
-  diseases: string[];
+  @IsEnum(Gender)
+  @ApiProperty({ enum: Gender })
+  gender: Gender;
 
-  @ApiProperty({
-    description: "list of patient's allergies",
-  })
-  allergies: string[];
-
-  @ApiProperty()
-  roomNumber: string;
-
-  @ApiProperty()
-  bedNumber: string;
-
-  @ApiProperty()
-  floorNumber: string;
-
+  @IsInt()
   @ApiProperty()
   age: number;
 
+  @IsString()
   @ApiProperty()
-  @IsEnum(Gender)
-  gender: Gender;
+  roomNumber: string;
 
+  @IsString()
+  @ApiProperty()
+  bedNumber: string;
+
+  @IsString()
+  @ApiProperty()
+  floorNumber: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty()
+  allergies: string[];
+
+  @ValidateNested()
   @ApiProperty()
   contactNumber: Contact;
 
+  @ValidateNested()
   @ApiProperty()
   emergencyContact: Contact;
 
-  @ApiProperty({
-    description: 'notes about specific nutritionist facts about the patient',
-    required: false,
-  })
-  dietaryNotes: string;
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ required: false })
+  dietaryNotes: string | null;
 
-  @ApiProperty({
-    required: false,
-  })
-  additionalNotes: string;
-
-  @ApiProperty({
-    description: 'Is the patient in the hospital or not',
-    default: true,
-  })
-  isActive: boolean;
-
-  @ApiProperty({
-    description: 'meal plans tailored to the patient',
-  })
-  mealPlan: string[];
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ required: false })
+  additionalNotes: string | null;
 
   @ApiProperty()
-  pantryId: string;
-}
+  isActive: boolean;
 
-//TODO add pantry
+  @ApiProperty()
+  pantryId: string | null;
+}

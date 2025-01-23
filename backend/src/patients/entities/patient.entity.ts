@@ -1,26 +1,17 @@
-import { Patient } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Contact, Gender } from '@prisma/client';
-import { IsEnum } from 'class-validator';
-
+import { Gender, Contact, Patient } from '@prisma/client';
 export class PatientEntity implements Patient {
   @ApiProperty()
   id: string;
 
-  @ApiProperty({
-    description: 'full name of the patient',
-  })
+  @ApiProperty()
   name: string;
 
-  @ApiProperty({
-    description: 'list of diseases of the patient',
-  })
-  diseases: string[];
+  @ApiProperty({ enum: Gender })
+  gender: Gender;
 
-  @ApiProperty({
-    description: "list of patient's allergies",
-  })
-  allergies: string[];
+  @ApiProperty()
+  age: number;
 
   @ApiProperty()
   roomNumber: string;
@@ -31,12 +22,8 @@ export class PatientEntity implements Patient {
   @ApiProperty()
   floorNumber: string;
 
-  @ApiProperty()
-  age: number;
-
-  @ApiProperty()
-  @IsEnum(Gender)
-  gender: Gender;
+  @ApiProperty({ type: [String] })
+  allergies: string[];
 
   @ApiProperty()
   contactNumber: Contact;
@@ -44,30 +31,17 @@ export class PatientEntity implements Patient {
   @ApiProperty()
   emergencyContact: Contact;
 
-  @ApiProperty({
-    description: 'notes about specific nutritionist facts about the patient',
-    required: false,
-  })
-  dietaryNotes: string;
+  @ApiProperty({ required: false })
+  dietaryNotes: string | null;
 
-  @ApiProperty({
-    required: false,
-  })
-  additionalNotes: string;
-
-  @ApiProperty({
-    description: 'Is the patient in the hospital or not',
-    default: true,
-  })
-  isActive: boolean;
-
-  @ApiProperty({
-    description: 'meal plans tailored to the patient',
-  })
-  mealPlan: string[];
+  @ApiProperty({ required: false })
+  additionalNotes: string | null;
 
   @ApiProperty()
-  pantryId: string;
+  pantryId: string | null;
+
+  @ApiProperty()
+  isActive: boolean;
 
   @ApiProperty()
   createdAt: Date;
@@ -75,5 +49,3 @@ export class PatientEntity implements Patient {
   @ApiProperty()
   updatedAt: Date;
 }
-
-//TODO add pantry

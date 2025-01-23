@@ -8,27 +8,52 @@ export class PatientsService {
   constructor(private prisma: PrismaService) {}
 
   create(createPatientDto: CreatePatientDto) {
-    return this.prisma.patient.createMany({
+    return this.prisma.patient.create({
       data: createPatientDto,
+      include: {
+        diseases: true,
+        assignedPantry: true,
+      },
     });
   }
 
   findAll() {
-    return this.prisma.patient.findMany();
+    return this.prisma.patient.findMany({
+      include: {
+        diseases: true,
+        assignedPantry: true,
+      },
+    });
   }
 
   findOne(id: string) {
-    return this.prisma.patient.findUnique({ where: { id } });
+    return this.prisma.patient.findUnique({
+      where: { id },
+      include: {
+        diseases: true,
+        assignedPantry: true,
+      },
+    });
   }
 
   update(id: string, updatePatientDto: UpdatePatientDto) {
     return this.prisma.patient.update({
       where: { id },
       data: updatePatientDto,
+      include: {
+        diseases: true,
+        assignedPantry: true,
+      },
     });
   }
 
   remove(id: string) {
-    return this.prisma.patient.delete({ where: { id } });
+    return this.prisma.patient.delete({
+      where: { id },
+      include: {
+        diseases: true,
+        assignedPantry: true,
+      },
+    });
   }
 }
